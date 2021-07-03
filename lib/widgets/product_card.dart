@@ -5,8 +5,15 @@ import 'package:flutter/material.dart';
 class ProductCard extends StatelessWidget {
   final Product product;
   final double? widthFactor;
-  const ProductCard({Key? key, required this.product, this.widthFactor = 2.5})
-      : super(key: key);
+  final double? leftPosition;
+  final bool isWishlist;
+  const ProductCard({
+    Key? key,
+    this.leftPosition = 5,
+    required this.product,
+    this.widthFactor = 2.5,
+    this.isWishlist = false,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,30 +26,31 @@ class ProductCard extends StatelessWidget {
       child: Stack(
         children: [
           Container(
-            width: widthValue,
+            width: widthValue - 10,
             height: 150,
             child: Image.network(
               product.imageUrl,
               fit: BoxFit.cover,
             ),
           ),
+          // Positioned(
+          //   top: 60,
+          //   left: widthValue - 10 - leftPosition!,
+          //   child: Container(
+          //     width: widthValue,
+          //     height: 80,
+          //     decoration: BoxDecoration(color: Colors.black.withAlpha(50)),
+          //   ),
+          // ),
           Positioned(
-            top: 60,
+            top: 65,
+            left: leftPosition! + 5,
             child: Container(
-              width: widthValue,
-              height: 80,
-              decoration: BoxDecoration(color: Colors.black.withAlpha(50)),
-            ),
-          ),
-          Positioned(
-            top: 60,
-            left: 5,
-            child: Container(
-              height: 80,
-              width: widthValue - 10,
+              height: 70,
+              width: widthValue - 10 - leftPosition!,
               decoration: BoxDecoration(color: Colors.black),
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: const EdgeInsets.all(5.0),
                 child: Row(
                   children: [
                     Expanded(
@@ -76,7 +84,18 @@ class ProductCard extends StatelessWidget {
                           color: Colors.white,
                         ),
                       ),
-                    )
+                    ),
+                    isWishlist
+                        ? Expanded(
+                            child: IconButton(
+                              onPressed: () {},
+                              icon: Icon(
+                                Icons.delete,
+                                color: Colors.white,
+                              ),
+                            ),
+                          )
+                        : SizedBox()
                   ],
                 ),
               ),
