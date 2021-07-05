@@ -5,3 +5,4 @@ export 'section_title.dart';
 export 'product_card.dart';
 export 'product_carousel.dart';
 export 'package:flutter/material.dart';
+export 'cardProductCard.dart';

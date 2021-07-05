@@ -1,6 +1,10 @@
+import 'package:ecommerce/bloc/cart/cart_bloc.dart';
+import 'package:ecommerce/bloc/wishlist/wishlist_bloc.dart';
+
 import 'package:ecommerce/model/model.dart';
 import 'package:ecommerce/screens/screens.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProductCard extends StatelessWidget {
   final Product product;
@@ -17,6 +21,7 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final wishlistBloc = BlocProvider.of<WishlistBloc>(context);
     final double widthValue = MediaQuery.of(context).size.width / widthFactor!;
     return InkWell(
       onTap: () {
@@ -44,7 +49,7 @@ class ProductCard extends StatelessWidget {
           // ),
           Positioned(
             top: 65,
-            left: leftPosition! + 5,
+            left: leftPosition! - 5,
             child: Container(
               height: 70,
               width: widthValue - 10 - leftPosition!,
@@ -76,23 +81,45 @@ class ProductCard extends StatelessWidget {
                         ],
                       ),
                     ),
-                    Expanded(
-                      child: IconButton(
-                        onPressed: () {},
-                        icon: Icon(
-                          Icons.add_circle,
-                          color: Colors.white,
-                        ),
-                      ),
+                    BlocBuilder<CartBloc, CartState>(
+                      builder: (context, state) {
+                        if (state is CartLoadingState)
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        if (state is CartLoadedState) {
+                          return Expanded(
+                            child: IconButton(
+                              onPressed: () {
+                                context
+                                    .read<CartBloc>()
+                                    .add(AddCartProductEvent(product));
+                              },
+                              icon: Icon(
+                                Icons.add_circle,
+                                color: Colors.white,
+                              ),
+                            ),
+                          );
+                        } else {
+                          return Text('Something went wrong');
+                        }
+                      },
                     ),
                     isWishlist
                         ? Expanded(
-                            child: IconButton(
-                              onPressed: () {},
-                              icon: Icon(
-                                Icons.delete,
-                                color: Colors.white,
-                              ),
+                            child: BlocBuilder<WishlistBloc, WishlistState>(
+                              builder: (context, state) {
+                                return IconButton(
+                                  onPressed: () {
+                                    //   context.read<WishlistBloc>().add(RemoveWishlistProductEvent)
+                                  },
+                                  icon: Icon(
+                                    Icons.delete,
+                                    color: Colors.white,
+                                  ),
+                                );
+                              },
                             ),
                           )
                         : SizedBox()
